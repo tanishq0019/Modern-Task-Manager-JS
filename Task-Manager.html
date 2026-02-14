@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task-Manager</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .heading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            cursor: default;
+        }
+
+        .heading h1 {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 3.5rem;
+            /* Slightly larger */
+            color: aliceblue;
+            margin-top: 40px;
+            margin-bottom: 5px;
+            /* Reduced to bring h4 closer */
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            text-shadow:
+                0 5px 15px rgba(0, 0, 0, 0.3),
+                0 0 20px rgba(255, 255, 255, 0.2);
+            font-weight: 900;
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .heading h4 {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 0.8rem;
+            color: rgba(240, 248, 255, 0.5);
+            /* Semi-transparent for elegance */
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+
+        /* The Hover Effect - Apply to h1 when container is hovered */
+        .heading:hover h1 {
+            letter-spacing: 14px;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transform: scale(1.05);
+            color: #fff;
+        }
+
+        .action_btn {
+            display: flex;
+            gap: 5px;
+        }
+
+        .pending_btn,
+        .done_btn {
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 6px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: 0.3s all ease;
+            font-family: sans-serif;
+            letter-spacing: 0.5px;
+        }
+
+        /* Pending State - Soft Gold/Orange glow */
+        .pending_btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffdca3;
+        }
+
+        .pending_btn:hover {
+            background: rgba(255, 165, 0, 0.4);
+            box-shadow: 0 0 15px rgba(255, 165, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Done State - Emerald/Glass Green */
+        .done_btn {
+            background: rgba(46, 204, 113, 0.2);
+            color: #ffffff;
+        }
+
+        .done_btn:hover {
+            background: rgba(46, 204, 113, 0.4);
+            box-shadow: 0 0 15px rgba(46, 204, 113, 0.3);
+            transform: translateY(-2px);
+        }
+
+
+        .incomplete {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            background: rgba(209, 94, 94, 0.422);
+            /* Subtle glass effect */
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 12px 20px;
+            margin: 20px 0;
+            width: 90%;
+            max-width: 500px;
+            transition: 0.3s ease;
+        }
+
+        .incomplete:hover {
+            background: rgba(168, 58, 58, 0.755);
+            transform: translateX(5px);
+        }
+
+        .completed {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(94, 209, 113, 0.422);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 12px 20px;
+            margin: 20px 0;
+            width: 90%;
+            max-width: 500px;
+            transition: 0.3s ease;
+        }
+
+        .completed:hover {
+            background: rgba(94, 209, 113, 0.692);
+            transform: translateX(5px);
+        }
+
+        .task-text {
+            font-size: 16px;
+            font-family: sans-serif;
+            font-weight: 500;
+        }
+
+        input {
+            width: 235px;
+            background: transparent;
+            border: 0;
+            outline: 0;
+            border-bottom: 2px solid aliceblue;
+            margin: 10px;
+            font-size: 15px;
+            color: aliceblue;
+        }
+
+        input::placeholder {
+            color: rgba(240, 248, 255, 0.701);
+        }
+
+        button.delete {
+            background-color: rgba(20, 20, 20, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 6px 14px;
+            color: #ffffff;
+            font-family: sans-serif;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-left: 8px;
+            transition: 0.3s;
+        }
+
+        button.delete:hover {
+            background-color: rgba(214, 48, 49, 0.8);
+            color: white;
+            box-shadow: 0 5px 15px rgba(214, 48, 49, 0.4);
+        }
+
+        button#add {
+            background-color: aliceblue;
+            border: 0;
+            border-radius: 20px;
+            padding: 10px;
+            width: 60px;
+            color: blueviolet;
+            font-weight: bold;
+            transition: 0.3s ease;
+
+        }
+
+        button#add:hover {
+            box-shadow: 0 1px 30px rgba(35, 12, 105, 0.817);
+            transform: scale(1.05);
+            color: rgba(35, 12, 105, 0.817);
+        }
+
+        .main {
+            border-radius: 30px;
+            box-shadow: 0 9px 30px rgba(0, 0, 0, 0.454);
+            padding: 20px;
+            transition: 0.3s ease;
+
+        }
+
+        .main:hover {
+            transform: scale(1.05);
+            box-shadow: 0 9px 30px rgba(35, 12, 105, 0.817);
+        }
+
+        @media (max-width: 500px) {
+            .heading h1 {
+                font-size: 2.2rem;
+                letter-spacing: 4px;
+            }
+
+            .heading h4 {
+                font-size: 0.7rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .List_items {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .action_btn {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="heading">
+        <h1>Task-Manager</h1>
+        <h4>By: Tanishq Sharma</h4>
+    </div>
+    <div class="main">
+        <input type="text" placeholder="Enter your task...">
+        <button id="add">Add</button>
+    </div>
+    <div class="list"></div>
+    <script>
+        let array = [
+        ]
+        let text = document.querySelector("input");
+        let btn = document.querySelector("button#add");
+        let list = document.querySelector(".list");
+        const status_check = (status) => {
+            return status ? "completed" : "incomplete";
+        }
+        const add_func = () => {
+            list.innerHTML = array.map(({ id, name, status }) => `
+    <div class="List_items ${status ? "completed" : 'incomplete'}">
+        <span style="color: white; font-weight: 500; font-family: sans-serif;">
+            ${name} 
+        </span>
+        <div class="action_btn">
+            <button 
+    class="status_change ${status ? 'done_btn' : 'pending_btn'}"
+    onclick="status_change(${id})">
+    ${status ? 'Undo' : 'Complete'}
+</button>
+
+        <button class="delete" onclick="delete_task(${id})">Delete</button>
+        </div>
+    </div>
+    `).join('')
+        }
+        add_func();
+        const delete_task = (id) => {
+            array = array.filter(item => item.id !== id)
+            add_func();
+        }
+        const status_change = (id) => {
+            array = array.map(item =>
+                item.id === id
+                    ? { ...item, status: !item.status }
+                    : item
+            );
+            add_func();
+        }
+        text.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                btn.click();
+            };
+        });
+
+        btn.addEventListener("click", () => {
+            if (text.value !== '') {
+                const new_task = { id: Date.now(), name: text.value, status: false }
+                array = [...array, new_task];
+                text.value = '';
+                add_func();
+            }
+        })
+        add_func();
+    </script>
+</body>
+
+</html>
